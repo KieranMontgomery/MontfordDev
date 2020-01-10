@@ -63,10 +63,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Boost.cs" />
-    <Compile Include="Assets\CubeFloor\CubeFloor.cs" />
-    <Compile Include="Assets\PlayerBoost.cs" />
-    <Compile Include="Assets\PlayerMovement.cs" />
+    <Compile Include="Assets\Dev\CubeFloor\CubeFloor.cs" />
+    <Compile Include="Assets\Dev\Player\Scripts\MouseLook.cs" />
+    <Compile Include="Assets\Dev\Player\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\MenuSceneLoader.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\SceneAndURLLoader.cs" />
