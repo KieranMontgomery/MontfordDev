@@ -3311,10 +3311,10 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 2
-  m_Radius: 0.6
+  m_Radius: 1.1
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.03
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &988125936
@@ -3346,9 +3346,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkspeed: 10
-  gravity: -9.81
+  gravity: -19.62
   isGrounded: 0
   distToGround: 0
+  jumpHeight: 3
 --- !u!1 &1005041351
 GameObject:
   m_ObjectHideFlags: 0

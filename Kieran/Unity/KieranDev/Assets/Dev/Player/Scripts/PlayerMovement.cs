@@ -13,9 +13,10 @@ public class PlayerMovement : MonoBehaviour
     private Collider playerCollider;
 
     Vector3 velocity;
-    public float gravity = -9.81f;
+    public float gravity = -19.62f; // Two times 9.81 since it felt sluggish
     public bool isGrounded;
     public float distToGround;
+    public float jumpHeight = 3f;
 
     private Vector3 playerOrigin;
     
@@ -43,14 +44,20 @@ public class PlayerMovement : MonoBehaviour
         // Move Character
         characterController.Move(desiredDirection * walkspeed * Time.deltaTime);
 
+        if (Input.GetButtonDown("Jump"))
+        {
+            Debug.Log("Pressed jump");
+            velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+        }
+
         // -------------------------------- Apply gravity
+
 
         // Find distance to ground
         RaycastHit groundHitInfo;
         playerOrigin = transform.position;
         Physics.Raycast(playerOrigin, Vector3.down, out groundHitInfo);
         distToGround = groundHitInfo.distance - 1f;
-        Debug.Log(distToGround);
 
         // If higher than value, apply negative velocity
         if (distToGround > 0.1f)
@@ -66,8 +73,8 @@ public class PlayerMovement : MonoBehaviour
 
     void GetInput(out Vector2 input)
     {
-        input.x = Input.GetAxis("Horizontal");
-        input.y = Input.GetAxis("Vertical");
+        input.x = Input.GetAxisRaw("Horizontal");
+        input.y = Input.GetAxisRaw("Vertical");
 
         // Normalize input if it exceeds 1 in combined length
         if (input.sqrMagnitude > 1)
