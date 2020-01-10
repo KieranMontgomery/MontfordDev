@@ -536,6 +536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dimension: 32
+  numberOfStairs: 5
   CubeColour1: {fileID: 162037963564910839, guid: 82310884cc6620044b8b4d3263a00274,
     type: 3}
   CubeColour2: {fileID: 3501274668241499306, guid: e399b65f839b560459c078e9de6bac0f,
