@@ -7,26 +7,31 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
 
-    public float walkspeed = 10f;
-    public float currentspeed = 0f;
-
-    private CharacterController characterController;
-    private Collider playerCollider;
-
-    Vector3 velocity;
-    public float gravity = -19.62f; // Two times 9.81 since it felt sluggish
-    public bool isGrounded;
-    private float distToGround;
-    public float jumpHeight = 3f;
-
-    private Vector3 playerOrigin;
+    // Public declerations
 
     public SphereCollider sphereCollider;
+    public float walkspeed = 10f;
+    public float currentspeed = 0f;
+    public float gravity = -19.62f; // Two times 9.81 since it felt sluggish
+    public bool isGrounded;
+    public float jumpHeight = 3f;
 
     [Range(0.0f, 50.0f)]
     public float speedUpRamp = 40f;
     [Range(0.0f, 50.0f)]
     public float speedDownRamp = 40f;
+    public Vector3 currentDirection;
+
+    // Private declerations
+
+    private CharacterController characterController;
+    private Collider playerCollider;
+    private float distToGround;
+    private Vector3 playerOrigin;
+
+    // Declerations
+
+    Vector3 velocity;
 
     // Start is called before the first frame update
     void Start()
@@ -42,7 +47,6 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 input;
         GetInput(out input);
-
         Vector3 desiredDirection = transform.forward * input.z + transform.right * input.x;
 
         // Get a normal for the surface that is being touched to move along it
@@ -55,15 +59,15 @@ public class PlayerMovement : MonoBehaviour
         {
             currentspeed -= Time.deltaTime * speedDownRamp;
             currentspeed = Mathf.Clamp(currentspeed, 0, walkspeed);
-            characterController.Move(desiredDirection * currentspeed * Time.deltaTime);
+            characterController.Move(currentDirection * currentspeed * Time.deltaTime);
         }
         else
         {
             currentspeed += Time.deltaTime * speedUpRamp;
             currentspeed = Mathf.Clamp(currentspeed, 0, walkspeed);
             characterController.Move(desiredDirection * currentspeed * Time.deltaTime);
+            currentDirection = desiredDirection;
         }
-
 
         if (Input.GetButtonDown("Jump"))
         {
