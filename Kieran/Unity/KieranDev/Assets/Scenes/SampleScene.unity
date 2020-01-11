@@ -3352,8 +3352,8 @@ MonoBehaviour:
   isGrounded: 0
   jumpHeight: 3
   sphereCollider: {fileID: 988125938}
-  speedUpRamp: 20
-  speedDownRamp: 30
+  speedUpRamp: 40
+  speedDownRamp: 40
 --- !u!135 &988125938
 SphereCollider:
   m_ObjectHideFlags: 0

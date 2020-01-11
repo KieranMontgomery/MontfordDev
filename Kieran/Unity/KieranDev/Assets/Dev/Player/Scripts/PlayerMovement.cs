@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
         {
             currentspeed -= Time.deltaTime * speedDownRamp;
             currentspeed = Mathf.Clamp(currentspeed, 0, walkspeed);
-            characterController.Move(transform.forward * currentspeed * Time.deltaTime);
+            characterController.Move(desiredDirection * currentspeed * Time.deltaTime);
         }
         else
         {
