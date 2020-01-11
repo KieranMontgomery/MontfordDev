@@ -147,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 14751263}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1, z: 1.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 988125936}
   m_RootOrder: 0
@@ -411,7 +411,7 @@ GameObject:
   - component: {fileID: 158718363}
   - component: {fileID: 158718362}
   - component: {fileID: 158718361}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Wall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2349,7 +2349,7 @@ GameObject:
   - component: {fileID: 782695569}
   - component: {fileID: 782695568}
   - component: {fileID: 782695567}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Wall (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3076,7 +3076,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.708, z: 0}
+  m_LocalPosition: {x: 0, y: 0.77, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 988125936}
@@ -3292,6 +3292,7 @@ GameObject:
   - component: {fileID: 988125936}
   - component: {fileID: 988125935}
   - component: {fileID: 988125937}
+  - component: {fileID: 988125938}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -3313,7 +3314,7 @@ CharacterController:
   m_Height: 2
   m_Radius: 1.1
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0.42
   m_SkinWidth: 0.03
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
@@ -3325,7 +3326,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988125934}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 33.17, y: 0.367, z: 7.22}
+  m_LocalPosition: {x: 8, y: 1.75, z: -30.809}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 14751264}
@@ -3346,10 +3347,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkspeed: 10
+  currentspeed: 0
   gravity: -19.62
   isGrounded: 0
-  distToGround: 0
   jumpHeight: 3
+  sphereCollider: {fileID: 988125938}
+  speedUpRamp: 20
+  speedDownRamp: 30
+--- !u!135 &988125938
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988125934}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Radius: 1.6
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1005041351
 GameObject:
   m_ObjectHideFlags: 0
@@ -3730,7 +3747,7 @@ GameObject:
   - component: {fileID: 1142018712}
   - component: {fileID: 1142018711}
   - component: {fileID: 1142018710}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4316,7 +4333,7 @@ GameObject:
   - component: {fileID: 1364186851}
   - component: {fileID: 1364186850}
   - component: {fileID: 1364186849}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Wall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4885,7 +4902,7 @@ GameObject:
   - component: {fileID: 1497029554}
   - component: {fileID: 1497029553}
   - component: {fileID: 1497029552}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Wall (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5476,7 +5493,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1564991876}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5917,7 +5934,7 @@ GameObject:
   - component: {fileID: 1678703988}
   - component: {fileID: 1678703987}
   - component: {fileID: 1678703986}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Wall (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
