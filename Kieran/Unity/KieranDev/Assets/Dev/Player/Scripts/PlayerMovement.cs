@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 
     public SphereCollider sphereCollider;
     public float walkspeed = 10f;
+    public float sprintspeed = 15f;
     public float currentspeed = 0f;
     public float gravity = -19.62f; // Two times 9.81 since it felt sluggish
     public bool isGrounded;
@@ -28,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private Collider playerCollider;
     private float distToGround;
     private Vector3 playerOrigin;
+    private float speed;
 
     // Declerations
 
@@ -55,16 +57,25 @@ public class PlayerMovement : MonoBehaviour
         desiredDirection = Vector3.ProjectOnPlane(desiredDirection, hitInfo.normal).normalized;
 
         // Move Character
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            speed = sprintspeed;
+        }
+        else
+        {
+            speed = walkspeed;
+        }
+
         if (input == Vector3.zero)
         {
             currentspeed -= Time.deltaTime * speedDownRamp;
-            currentspeed = Mathf.Clamp(currentspeed, 0, walkspeed);
+            currentspeed = Mathf.Clamp(currentspeed, 0, speed);
             characterController.Move(currentDirection * currentspeed * Time.deltaTime);
         }
         else
         {
             currentspeed += Time.deltaTime * speedUpRamp;
-            currentspeed = Mathf.Clamp(currentspeed, 0, walkspeed);
+            currentspeed = Mathf.Clamp(currentspeed, 0, speed);
             characterController.Move(desiredDirection * currentspeed * Time.deltaTime);
             currentDirection = desiredDirection;
         }
