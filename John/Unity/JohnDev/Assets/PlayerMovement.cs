@@ -5,25 +5,25 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
 
-    public Rigidbody rb;
+    public CharacterController controller;
 
-    public float xspeed;
-    public float zspeed;
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
+    public float speed = 12f;
+    public float gravity = -9.81f;
 
-    }
+    Vector3 velocity;
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        float movHorizontal = Input.GetAxis("Horizontal");
-        float movVertical = Input.GetAxis("Vertical");
+        float x = Input.GetAxis("Horizontal");
+        float y = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(xspeed * movHorizontal, 0f, zspeed * movVertical);
+        Vector3 move = transform.right * x + transform.forward * y;
 
-        rb.AddForce(movement);
+        controller.Move(move * speed * Time.deltaTime);
+
+        velocity.y += gravity * Time.deltaTime;
+
+        controller.Move(velocity * Time.deltaTime);
     }
 }
