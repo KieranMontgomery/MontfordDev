@@ -14,26 +14,23 @@ public class PlayerMovement : MonoBehaviour
     public float sprintspeed = 15f;
     public float currentspeed = 0f;
     public float gravity = -19.62f; // Two times 9.81 since it felt sluggish
-    public bool isGrounded;
+    public bool isGrounded = false;
     public float jumpHeight = 3f;
+    public Vector3 currentVelocity;
 
     [Range(0.0f, 50.0f)]
     public float speedUpRamp = 40f;
     [Range(0.0f, 50.0f)]
     public float speedDownRamp = 40f;
     public Vector3 currentDirection;
-
-    public float floorCheckRadius;
-    public LayerMask floorLayer;
+    public float distance = 1.05f;
+    public RaycastHit hit;
 
     // Private declerations
 
     private CharacterController characterController;
-    private Collider playerCollider;
-    private float distToGround;
-    private Vector3 playerOrigin;
     private float speed;
-    public Vector3 currentVelocity;
+
     // Declerations
 
     Vector3 velocity; // This is annoying to have
@@ -47,16 +44,12 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GroundCheck();
         // -------------------------------- Move Player
         // Find desired direction
         Vector3 input;
         GetInput(out input);
         Vector3 desiredDirection = transform.forward * input.z + transform.right * input.x;
-
-        // Get a normal for the surface that is being touched to move along it
-        RaycastHit hitInfo;
-        Physics.SphereCast(transform.position, characterController.radius, Vector3.down, out hitInfo, characterController.height / 2f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
-        desiredDirection = Vector3.ProjectOnPlane(desiredDirection, hitInfo.normal).normalized;
 
         // Move Character
         if (Input.GetKey(KeyCode.LeftShift))
@@ -75,6 +68,7 @@ public class PlayerMovement : MonoBehaviour
                 currentspeed -= Time.deltaTime * speedDownRamp;
                 currentspeed = Mathf.Clamp(currentspeed, 0, speed);
                 characterController.Move(currentDirection * currentspeed * Time.deltaTime);
+                currentVelocity = currentDirection * currentspeed * Time.deltaTime;
             }
             else
             {
@@ -90,6 +84,7 @@ public class PlayerMovement : MonoBehaviour
                 currentspeed += Time.deltaTime * speedUpRamp;
                 currentspeed = Mathf.Clamp(currentspeed, 0, speed);
                 currentDirection = desiredDirection;
+                currentVelocity = currentDirection * currentspeed * Time.deltaTime;
                 characterController.Move(currentDirection * currentspeed * Time.deltaTime);
             }
             else
@@ -101,13 +96,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space) && isGrounded)
         {
-            Debug.Log("Pressed Jump");
+            isGrounded = false;
             velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+            Debug.Log(("Pressed jump", velocity.y));
             characterController.Move(velocity * Time.deltaTime);
         }
 
         // -------------------------------- Apply gravity
-        GroundCheck();
         if (!isGrounded)
         {
             velocity.y += gravity * Time.deltaTime;
@@ -115,10 +110,9 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            velocity.y = -2f;
+            velocity.y = -characterController.stepOffset / Time.deltaTime;
+            characterController.Move(velocity * Time.deltaTime);
         }
-
-        // ---------------------------------- Wall run??
     }
 
     void GetInput(out Vector3 input)
@@ -136,16 +130,17 @@ public class PlayerMovement : MonoBehaviour
 
     void GroundCheck()
     {
-        if (Physics.OverlapSphere(transform.position, floorCheckRadius, floorLayer).Length == 1)
-        {
-            if (Physics.OverlapSphere(transform.position, floorCheckRadius, floorLayer)[0].gameObject.layer == 8) // Ground is on layer 8
-            {
-                isGrounded = true;
-            }
+        isGrounded = IsGroundedByRaycast();
+    }
+
+    public bool IsGroundedByRaycast()
+    {
+        Debug.DrawRay(transform.position, Vector3.down * distance, Color.green);       //draw the line to be seen in scene window
+
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, distance))
+        {      //if we hit something
+            return true;
         }
-        else
-        {
-            isGrounded = false;
-        }
+        return false;
     }
 }
