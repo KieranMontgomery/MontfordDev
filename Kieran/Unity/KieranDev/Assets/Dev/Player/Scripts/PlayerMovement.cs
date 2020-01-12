@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Public declerations
 
-    public SphereCollider sphereCollider;
+    public CapsuleCollider capsuleCollider;
     public float walkspeed = 10f;
     public float sprintspeed = 15f;
     public float currentspeed = 0f;
@@ -46,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
     {
         // -------------------------------- Move Player
         // Find desired direction
-
+        isGrounded = false;
         Vector3 input;
         GetInput(out input);
         Vector3 desiredDirection = transform.forward * input.z + transform.right * input.x;
@@ -86,16 +86,12 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // -------------------------------- Apply gravity
-        // Find distance to ground
-        RaycastHit groundHitInfo;
-        playerOrigin = transform.position;
-        Physics.Raycast(playerOrigin, Vector3.down, out groundHitInfo);
-        distToGround = groundHitInfo.distance - 1f;
 
-        // If higher than value, apply negative velocity
-        if (distToGround > 0.1f)
+        //Debug.Log(isGrounded);
+        if (!isGrounded)
         {
             velocity.y += gravity * Time.deltaTime;
+            velocity.y = -2f;
             characterController.Move(velocity * Time.deltaTime);
         }
         else
@@ -104,7 +100,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // ---------------------------------- Wall run??
-
+        GroundCheck();
+        Debug.Log(isGrounded);
     }
 
     void GetInput(out Vector3 input)
@@ -119,4 +116,22 @@ public class PlayerMovement : MonoBehaviour
             input.Normalize();
         }
     }
+
+    void GroundCheck()
+    {
+        RaycastHit hit;
+        Vector3 dir = new Vector3(0, -1);
+        float distance = 1.14f;
+
+        if (Physics.Raycast(transform.position, dir, out hit, distance))
+        {
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+    }
+
+
 }
