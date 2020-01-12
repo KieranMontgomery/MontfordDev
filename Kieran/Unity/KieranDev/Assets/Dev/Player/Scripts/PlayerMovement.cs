@@ -155,16 +155,15 @@ public class PlayerMovement : MonoBehaviour
 
         float maxAirSpeed = currentspeed + 2f;
         float minAirSpeed = currentspeed - 2f;
-
         currentDirection = Vector3.Lerp(currentDirection, desiredDirection, 0.005f);
  
         if (currentspeed == 0)
         {
-            currentVelocity += desiredDirection * airspeed * Time.deltaTime;
+            currentVelocity += currentDirection * airspeed * Time.deltaTime;
 
-            currentVelocity.x = Mathf.Clamp(currentVelocity.x, desiredDirection.x * minAirSpeed * Time.deltaTime, desiredDirection.x * maxAirSpeed * Time.deltaTime);
-            currentVelocity.y = Mathf.Clamp(currentVelocity.y, desiredDirection.y * minAirSpeed * Time.deltaTime, desiredDirection.y * maxAirSpeed * Time.deltaTime);
-            currentVelocity.z = Mathf.Clamp(currentVelocity.z, desiredDirection.z * minAirSpeed * Time.deltaTime, desiredDirection.z * maxAirSpeed * Time.deltaTime);
+            currentVelocity.x = Mathf.Clamp(currentVelocity.x, currentDirection.x * 2f * Time.deltaTime, currentDirection.x * 2f * Time.deltaTime);
+            currentVelocity.y = Mathf.Clamp(currentVelocity.y, currentDirection.y * 2f * Time.deltaTime, currentDirection.y * 2f * Time.deltaTime);
+            currentVelocity.z = Mathf.Clamp(currentVelocity.z, currentDirection.z * 2f * Time.deltaTime, currentDirection.z * 2f * Time.deltaTime);
         }
         else
         {
@@ -178,7 +177,7 @@ public class PlayerMovement : MonoBehaviour
 
         characterController.Move(currentVelocity);
 
-        Debug.Log((desiredDirection, currentVelocity));
+        Debug.Log(desiredDirection.x * minAirSpeed * Time.deltaTime);
     }
 
 }
