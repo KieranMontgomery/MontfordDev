@@ -46,7 +46,6 @@ public class PlayerMovement : MonoBehaviour
     {
         // -------------------------------- Move Player
         // Find desired direction
-        isGrounded = false;
         Vector3 input;
         GetInput(out input);
         Vector3 desiredDirection = transform.forward * input.z + transform.right * input.x;
@@ -70,28 +69,30 @@ public class PlayerMovement : MonoBehaviour
         {
             currentspeed -= Time.deltaTime * speedDownRamp;
             currentspeed = Mathf.Clamp(currentspeed, 0, speed);
+
             characterController.Move(currentDirection * currentspeed * Time.deltaTime);
         }
         else
         {
             currentspeed += Time.deltaTime * speedUpRamp;
             currentspeed = Mathf.Clamp(currentspeed, 0, speed);
-            characterController.Move(desiredDirection * currentspeed * Time.deltaTime);
             currentDirection = desiredDirection;
+
+            characterController.Move(currentDirection * currentspeed * Time.deltaTime);
         }
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetKey(KeyCode.Space) && isGrounded)
         {
+            Debug.Log("Pressed Jump");
             velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+            characterController.Move(velocity * Time.deltaTime);
         }
 
         // -------------------------------- Apply gravity
-
-        //Debug.Log(isGrounded);
+        GroundCheck();
         if (!isGrounded)
         {
             velocity.y += gravity * Time.deltaTime;
-            velocity.y = -2f;
             characterController.Move(velocity * Time.deltaTime);
         }
         else
@@ -100,8 +101,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // ---------------------------------- Wall run??
-        GroundCheck();
-        Debug.Log(isGrounded);
     }
 
     void GetInput(out Vector3 input)
@@ -132,6 +131,4 @@ public class PlayerMovement : MonoBehaviour
             isGrounded = false;
         }
     }
-
-
 }
