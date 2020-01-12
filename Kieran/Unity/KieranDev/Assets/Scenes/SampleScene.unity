@@ -3271,15 +3271,15 @@ MonoBehaviour:
   walkspeed: 10
   sprintspeed: 15
   currentspeed: 0
+  airspeed: 0.66
   gravity: -19.62
   isGrounded: 0
-  jumpHeight: 3
+  jumpHeight: 30
   currentVelocity: {x: 0, y: 0, z: 0}
   speedUpRamp: 40
   speedDownRamp: 40
   currentDirection: {x: 0, y: 0, z: 0}
-  distance: 1.2
-  minDistance: 1.05
+  distance: 1.05
 --- !u!1 &1005041351
 GameObject:
   m_ObjectHideFlags: 0

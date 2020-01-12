@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     public float walkspeed = 10f;
     public float sprintspeed = 15f;
     public float currentspeed = 0f;
+    public float airspeed = 10f;
     public float gravity = -19.62f; // Two times 9.81 since it felt sluggish
     public bool isGrounded = false;
     public float jumpHeight = 3f;
@@ -30,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
 
     private CharacterController characterController;
     private float speed;
+    private Vector3 desiredVelocity;
 
     // Declerations
 
@@ -67,13 +69,16 @@ public class PlayerMovement : MonoBehaviour
             {
                 currentspeed -= Time.deltaTime * speedDownRamp;
                 currentspeed = Mathf.Clamp(currentspeed, 0, speed);
-                characterController.Move(currentDirection * currentspeed * Time.deltaTime);
                 currentVelocity = currentDirection * currentspeed * Time.deltaTime;
+                characterController.Move(currentVelocity);
             }
-            else
+            else // in the air with no input
             {
-                currentVelocity = currentDirection * currentspeed * Time.deltaTime;
-                characterController.Move(currentDirection * currentspeed * Time.deltaTime);
+                inAirMovement(desiredDirection);
+            }
+            if (currentspeed == 0)
+            {
+                currentDirection = Vector3.zero;
             }
 
         }
@@ -85,20 +90,18 @@ public class PlayerMovement : MonoBehaviour
                 currentspeed = Mathf.Clamp(currentspeed, 0, speed);
                 currentDirection = desiredDirection;
                 currentVelocity = currentDirection * currentspeed * Time.deltaTime;
-                characterController.Move(currentDirection * currentspeed * Time.deltaTime);
+                characterController.Move(currentVelocity);
             }
-            else
+            else // in the air with input
             {
-                currentVelocity = currentDirection * currentspeed * Time.deltaTime;
-                characterController.Move(currentDirection * currentspeed * Time.deltaTime);
+                inAirMovement(desiredDirection);
             }
         }
 
-        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             isGrounded = false;
             velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
-            Debug.Log(("Pressed jump", velocity.y));
             characterController.Move(velocity * Time.deltaTime);
         }
 
@@ -143,4 +146,39 @@ public class PlayerMovement : MonoBehaviour
         }
         return false;
     }
+
+    void inAirMovement(Vector3 desiredDirection)
+    {
+        // Default below
+        // currentVelocity = currentDirection * currentspeed * Time.deltaTime;
+        // characterController.Move(currentVelocity);
+
+        float maxAirSpeed = currentspeed + 2f;
+        float minAirSpeed = currentspeed - 2f;
+
+        currentDirection = Vector3.Lerp(currentDirection, desiredDirection, 0.005f);
+ 
+        if (currentspeed == 0)
+        {
+            currentVelocity += desiredDirection * airspeed * Time.deltaTime;
+
+            currentVelocity.x = Mathf.Clamp(currentVelocity.x, desiredDirection.x * minAirSpeed * Time.deltaTime, desiredDirection.x * maxAirSpeed * Time.deltaTime);
+            currentVelocity.y = Mathf.Clamp(currentVelocity.y, desiredDirection.y * minAirSpeed * Time.deltaTime, desiredDirection.y * maxAirSpeed * Time.deltaTime);
+            currentVelocity.z = Mathf.Clamp(currentVelocity.z, desiredDirection.z * minAirSpeed * Time.deltaTime, desiredDirection.z * maxAirSpeed * Time.deltaTime);
+        }
+        else
+        {
+            currentVelocity += currentDirection * currentspeed * Time.deltaTime;
+
+            currentVelocity.x = Mathf.Clamp(currentVelocity.x, currentDirection.x * minAirSpeed * Time.deltaTime, currentDirection.x * maxAirSpeed * Time.deltaTime);
+            currentVelocity.y = Mathf.Clamp(currentVelocity.y, currentDirection.y * minAirSpeed * Time.deltaTime, currentDirection.y * maxAirSpeed * Time.deltaTime);
+            currentVelocity.z = Mathf.Clamp(currentVelocity.z, currentDirection.z * minAirSpeed * Time.deltaTime, currentDirection.z * maxAirSpeed * Time.deltaTime);
+        }
+
+
+        characterController.Move(currentVelocity);
+
+        Debug.Log((desiredDirection, currentVelocity));
+    }
+
 }
