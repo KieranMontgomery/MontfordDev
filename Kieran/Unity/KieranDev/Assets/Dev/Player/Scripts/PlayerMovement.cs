@@ -23,6 +23,9 @@ public class PlayerMovement : MonoBehaviour
     public float speedDownRamp = 40f;
     public Vector3 currentDirection;
 
+    public float floorCheckRadius;
+    public LayerMask floorLayer;
+
     // Private declerations
 
     private CharacterController characterController;
@@ -118,13 +121,12 @@ public class PlayerMovement : MonoBehaviour
 
     void GroundCheck()
     {
-        RaycastHit hit;
-        Vector3 dir = new Vector3(0, -1);
-        float distance = 1.14f;
-
-        if (Physics.Raycast(transform.position, dir, out hit, distance))
+        if (Physics.OverlapSphere(transform.position, floorCheckRadius, floorLayer).Length == 1)
         {
-            isGrounded = true;
+            if (Physics.OverlapSphere(transform.position, floorCheckRadius, floorLayer)[0].gameObject.layer == 8) // Ground is on layer 8
+            {
+                isGrounded = true;
+            }
         }
         else
         {
