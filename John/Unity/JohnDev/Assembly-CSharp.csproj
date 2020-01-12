@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\MouseLook.cs" />
     <Compile Include="Assets\PlayerMovement.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/johns/OneDrive/Desktop/Montford_Project/MontfordDev/John/Unity/JohnDev/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
