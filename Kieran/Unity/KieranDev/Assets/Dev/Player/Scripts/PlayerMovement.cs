@@ -33,10 +33,10 @@ public class PlayerMovement : MonoBehaviour
     private float distToGround;
     private Vector3 playerOrigin;
     private float speed;
-
+    public Vector3 currentVelocity;
     // Declerations
 
-    Vector3 velocity;
+    Vector3 velocity; // This is annoying to have
 
     // Start is called before the first frame update
     void Start()
@@ -70,18 +70,33 @@ public class PlayerMovement : MonoBehaviour
 
         if (input == Vector3.zero)
         {
-            currentspeed -= Time.deltaTime * speedDownRamp;
-            currentspeed = Mathf.Clamp(currentspeed, 0, speed);
+            if (isGrounded)
+            {
+                currentspeed -= Time.deltaTime * speedDownRamp;
+                currentspeed = Mathf.Clamp(currentspeed, 0, speed);
+                characterController.Move(currentDirection * currentspeed * Time.deltaTime);
+            }
+            else
+            {
+                currentVelocity = currentDirection * currentspeed * Time.deltaTime;
+                characterController.Move(currentDirection * currentspeed * Time.deltaTime);
+            }
 
-            characterController.Move(currentDirection * currentspeed * Time.deltaTime);
         }
         else
         {
-            currentspeed += Time.deltaTime * speedUpRamp;
-            currentspeed = Mathf.Clamp(currentspeed, 0, speed);
-            currentDirection = desiredDirection;
-
-            characterController.Move(currentDirection * currentspeed * Time.deltaTime);
+            if (isGrounded)
+            {
+                currentspeed += Time.deltaTime * speedUpRamp;
+                currentspeed = Mathf.Clamp(currentspeed, 0, speed);
+                currentDirection = desiredDirection;
+                characterController.Move(currentDirection * currentspeed * Time.deltaTime);
+            }
+            else
+            {
+                currentVelocity = currentDirection * currentspeed * Time.deltaTime;
+                characterController.Move(currentDirection * currentspeed * Time.deltaTime);
+            }
         }
 
         if (Input.GetKey(KeyCode.Space) && isGrounded)
