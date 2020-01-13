@@ -74,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else // in the air with no input
             {
-                inAirMovement(desiredDirection);
+                inAirMovement(currentDirection);
             }
             if (currentspeed == 0)
             {
