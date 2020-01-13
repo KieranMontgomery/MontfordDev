@@ -16,6 +16,8 @@ public class PlayerMovement : MonoBehaviour
     public float airspeed = 10f;
     public float gravity = -19.62f; // Two times 9.81 since it felt sluggish
     public bool isGrounded = false;
+    public bool isAir;
+    public Vector3 directionOfJump;
     public float jumpHeight = 3f;
     public Vector3 currentVelocity;
 
@@ -31,7 +33,8 @@ public class PlayerMovement : MonoBehaviour
 
     private CharacterController characterController;
     private float speed;
-    private Vector3 desiredVelocity;
+
+    float startTime;
 
     // Declerations
 
@@ -103,6 +106,7 @@ public class PlayerMovement : MonoBehaviour
             isGrounded = false;
             velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
             characterController.Move(velocity * Time.deltaTime);
+            directionOfJump = transform.forward;
         }
 
         // -------------------------------- Apply gravity
@@ -116,6 +120,19 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = -characterController.stepOffset / Time.deltaTime;
             characterController.Move(velocity * Time.deltaTime);
         }
+        if (!isGrounded)
+        {
+            isAir = true;
+        }
+        if (isGrounded && isAir)
+        {
+            // Just landed
+            isAir = false;
+            Debug.Log(currentDirection);
+            currentVelocity = directionOfJump * currentspeed * Time.deltaTime;
+            characterController.Move(currentVelocity);
+        }
+        
     }
 
     void GetInput(out Vector3 input)
@@ -176,8 +193,5 @@ public class PlayerMovement : MonoBehaviour
 
 
         characterController.Move(currentVelocity);
-
-        Debug.Log(desiredDirection.x * minAirSpeed * Time.deltaTime);
     }
-
 }

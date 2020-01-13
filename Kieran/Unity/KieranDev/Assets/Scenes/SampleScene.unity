@@ -3274,6 +3274,8 @@ MonoBehaviour:
   airspeed: 10
   gravity: -19.62
   isGrounded: 0
+  isAir: 0
+  directionOfJump: {x: 0, y: 0, z: 0}
   jumpHeight: 3
   currentVelocity: {x: 0, y: 0, z: 0}
   speedUpRamp: 40
