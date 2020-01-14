@@ -128,12 +128,12 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded && !wasGrounded) // Landed
         {
             landTime = Time.time;
-            Debug.Log(("Landed at", landTime));
+            // Debug.Log(("Landed at", landTime));
         }
          
         else if (!isGrounded && wasGrounded) // Jump occurred
         {
-            Debug.Log("Jump.");
+            // Debug.Log("Jump.");
         }
                     
         wasGrounded = isGrounded;
@@ -160,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool IsGroundedByRaycast()
     {
-        Debug.DrawRay(transform.position, Vector3.down * distance, Color.green);       //draw the line to be seen in scene window
+        // Debug.DrawRay(transform.position, Vector3.down * distance, Color.green);       //draw the line to be seen in scene window
 
         if (Physics.Raycast(transform.position, Vector3.down, out hit, distance))
         {      //if we hit something
