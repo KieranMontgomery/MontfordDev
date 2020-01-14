@@ -34,7 +34,9 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController characterController;
     private float speed;
 
-    float startTime;
+    bool wasGrounded;
+    float landTime;
+    public float inteval = 1.0f;
 
     // Declerations
 
@@ -112,27 +114,30 @@ public class PlayerMovement : MonoBehaviour
         // -------------------------------- Apply gravity
         if (!isGrounded)
         {
+            isAir = true;
             velocity.y += gravity * Time.deltaTime;
             characterController.Move(velocity * Time.deltaTime);
         }
         else
         {
+            isAir = false;
             velocity.y = -characterController.stepOffset / Time.deltaTime;
             characterController.Move(velocity * Time.deltaTime);
         }
-        if (!isGrounded)
+
+        if (isGrounded && !wasGrounded) // Landed
         {
-            isAir = true;
+            landTime = Time.time;
+            Debug.Log(("Landed at", landTime));
         }
-        if (isGrounded && isAir)
+         
+        else if (!isGrounded && wasGrounded) // Jump occurred
         {
-            // Just landed
-            isAir = false;
-            Debug.Log(currentDirection);
-            currentVelocity = directionOfJump * currentspeed * Time.deltaTime;
-            characterController.Move(currentVelocity);
+            Debug.Log("Jump.");
         }
-        
+                    
+        wasGrounded = isGrounded;
+
     }
 
     void GetInput(out Vector3 input)
