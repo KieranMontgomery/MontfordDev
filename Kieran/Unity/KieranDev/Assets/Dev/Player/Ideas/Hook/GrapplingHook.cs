@@ -18,6 +18,8 @@ public class GrapplingHook : MonoBehaviour
 
     public bool havePointOnWall;
     public bool allowedToShoot;
+    public bool attached;
+    public bool foundTarget;
 
     private Collider hookCollider;
     private float travelSpeed;
@@ -25,6 +27,7 @@ public class GrapplingHook : MonoBehaviour
     int layerMask = 1 << 10; // Bit shift the index of the layer (8) to get a bit mask
 
     Vector3 target;
+    private RaycastHit hookHitTarget;
 
     void Start()
     {
@@ -33,21 +36,22 @@ public class GrapplingHook : MonoBehaviour
         travelSpeed = hookTravelSpeed / 100f;
         havePointOnWall = false;
         allowedToShoot = true;
+        attached = false;
+        foundTarget = false;
     }
     void Update()
     {
         // Fired hook
         if (Input.GetKey(KeyCode.E) && allowedToShoot) // Not shooting
         {
-            RaycastHit hookHitTarget;
             if (!havePointOnWall) // Dont have point on wall
             {
 
                 // Try look at wall
-                if (Physics.Raycast(hookHolder.transform.position, hookHolder.transform.forward, out hookHitTarget, maxDistance, layerMask)) // Found wall
+                foundTarget = Physics.Raycast(hookHolder.transform.position, hookHolder.transform.forward, out hookHitTarget, maxDistance, layerMask);
+                if (foundTarget) // Found wall
                 {
                     havePointOnWall = true;
-                    Debug.DrawRay(hookHolder.transform.position, hookHolder.transform.forward * hookHitTarget.distance, Color.yellow);
                     target = hookHitTarget.point;
                 }
                 else
@@ -66,8 +70,33 @@ public class GrapplingHook : MonoBehaviour
                 allowedToShoot = false;
             }
 
-            Debug.Log(hook.transform.position);
+            if (hook.transform.position == hookHitTarget.point)
+            {
+                attached = true;
+            }
+            else
+            {
+                attached = false;
+            }
 
+            if (attached)
+            {
+                RaycastHit hookClip;
+                Vector3 direction;
+                direction = hook.transform.position - hookHolder.transform.position;
+                Physics.Raycast(hookHolder.transform.position, direction, out hookClip, maxDistance, layerMask);
+                Debug.DrawRay(hookHolder.transform.position, direction, Color.green);
+
+                if (hookClip.point != hookHitTarget.point && hookClip.transform.gameObject.name != "Player")
+                {
+                    Debug.Log(("Should break", hookClip.transform.gameObject.name));
+                    ReturnHook();
+                    allowedToShoot = false;
+                    havePointOnWall = false;
+                }
+            }
+            
+          
         }
 
         if (Input.GetKeyUp(KeyCode.E))
@@ -75,12 +104,14 @@ public class GrapplingHook : MonoBehaviour
             ReturnHook();
             allowedToShoot = true;
             havePointOnWall = false;
+            attached = false;
         }
     }
 
     void ReturnHook()
     {
         hook.transform.position = hookHolder.transform.position;
+        attached = false;
     }
 }
 
