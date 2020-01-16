@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public float velocityMagnitude;
     public float gravity = -19.62f; // Two times 9.81 since it felt sluggish
     public float jumpHeight = 3f;
-    public float grouncCheckDistance = 1.05f;
+    public float groundCheckDistance = 0.05f;
 
     // Private declerations
 
@@ -24,6 +24,10 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded = false;
 
     // Declerations
+    Ray[] groundCheckRays;
+    RaycastHit[] groundCheckRaysInfo;
+    [Range(3, 360)]
+    public int numberOfGroundCheckRays;
 
     // Start is called before the first frame update
     void Start()
@@ -34,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GroundCheck();
+        isGrounded = GroundCheck();
         // -------------------------------- Planar movement --------------------------------
         Vector3 input;
         GetInput(out input);
@@ -78,14 +82,36 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /*
     public bool GroundCheck()
     {
-        Debug.DrawRay(transform.position, Vector3.down * grouncCheckDistance, Color.red);       //draw the line to be seen in scene window
+        Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, Color.red);       //draw the line to be seen in scene window
         RaycastHit hit;
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, grouncCheckDistance);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance);
         // if (isGrounded) Debug.Log(hit.transform.gameObject.name);
         return isGrounded;
     }
+    */
+
+    public bool GroundCheck()
+    {
+        for (int i=0; i < numberOfGroundCheckRays; i++)
+        {
+            RaycastHit hit;
+            float angle = (float)i * 360f/(float)numberOfGroundCheckRays;
+            angle = angle / 180.0f * Mathf.PI;
+            //Debug.Log((i, angle));
+            Vector3 positionOfRay = transform.position + Vector3.down + new Vector3(characterController.radius * Mathf.Cos(angle), 0f, characterController.radius * Mathf.Sin(angle));
+            Debug.DrawRay(positionOfRay, Vector3.down * groundCheckDistance, Color.red);
+            if (Physics.Raycast(positionOfRay, Vector3.down, out hit, groundCheckDistance))
+            {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
 
     void sprint()
     {

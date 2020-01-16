@@ -3988,7 +3988,8 @@ MonoBehaviour:
   velocityMagnitude: 0
   gravity: -19.62
   jumpHeight: 2
-  grouncCheckDistance: 1.05
+  groundCheckDistance: 0.05
+  numberOfGroundCheckRays: 9
 --- !u!114 &988125938
 MonoBehaviour:
   m_ObjectHideFlags: 0
