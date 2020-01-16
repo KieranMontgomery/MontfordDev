@@ -3982,22 +3982,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94aee956897cac94fb9ff8cf32a00091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capsuleCollider: {fileID: 0}
-  walkspeed: 10
-  sprintspeed: 15
-  currentspeed: 0
-  airspeed: 10
+  walkspeed: 8
+  sprintspeed: 12
+  velocity: {x: 0, y: 0, z: 0}
+  velocityMagnitude: 0
   gravity: -19.62
-  isGrounded: 0
-  isAir: 0
-  directionOfJump: {x: 0, y: 0, z: 0}
   jumpHeight: 2
-  currentVelocity: {x: 0, y: 0, z: 0}
-  speedUpRamp: 40
-  speedDownRamp: 40
-  currentDirection: {x: 0, y: 0, z: 0}
-  distance: 1.05
-  inteval: 1
+  grouncCheckDistance: 1.05
 --- !u!114 &988125938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4017,6 +4008,7 @@ MonoBehaviour:
   maxDistance: 20
   havePointOnWall: 0
   allowedToShoot: 0
+  attached: 0
 --- !u!1 &1005041351
 GameObject:
   m_ObjectHideFlags: 0

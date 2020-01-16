@@ -19,7 +19,6 @@ public class GrapplingHook : MonoBehaviour
     public bool havePointOnWall;
     public bool allowedToShoot;
     public bool attached;
-    public bool foundTarget;
 
     private Collider hookCollider;
     private float travelSpeed;
@@ -37,7 +36,6 @@ public class GrapplingHook : MonoBehaviour
         havePointOnWall = false;
         allowedToShoot = true;
         attached = false;
-        foundTarget = false;
     }
     void Update()
     {
@@ -46,10 +44,7 @@ public class GrapplingHook : MonoBehaviour
         {
             if (!havePointOnWall) // Dont have point on wall
             {
-
-                // Try look at wall
-                foundTarget = Physics.Raycast(hookHolder.transform.position, hookHolder.transform.forward, out hookHitTarget, maxDistance, layerMask);
-                if (foundTarget) // Found wall
+                if (Physics.Raycast(hookHolder.transform.position, hookHolder.transform.forward, out hookHitTarget, maxDistance, layerMask)) // Found wall
                 {
                     havePointOnWall = true;
                     target = hookHitTarget.point;
@@ -89,7 +84,6 @@ public class GrapplingHook : MonoBehaviour
 
                 if (hookClip.point != hookHitTarget.point && hookClip.transform.gameObject.name != "Player")
                 {
-                    Debug.Log(("Should break", hookClip.transform.gameObject.name));
                     ReturnHook();
                     allowedToShoot = false;
                     havePointOnWall = false;
