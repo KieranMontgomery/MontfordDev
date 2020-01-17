@@ -21,7 +21,6 @@ public class GrapplingHook : MonoBehaviour
     public bool allowedToShoot;
     public bool attached;
 
-    private Collider hookCollider;
     private float travelSpeed;
     public float hookLineLength;
 
@@ -29,17 +28,15 @@ public class GrapplingHook : MonoBehaviour
 
     Vector3 target;
     private RaycastHit hookHitTarget;
-
     void Start()
     {
-        hookCollider = hook.GetComponent<Collider>();
         layerMask = ~layerMask; // Invert to get everything but layer.
         travelSpeed = hookTravelSpeed / 100f;
         havePointOnWall = false;
         allowedToShoot = true;
         attached = false;
     }
-    public void grapple(Vector3 position)
+    public void grapple()
     {
         // Fired hook
         if (Input.GetKey(KeyCode.E) && allowedToShoot) // Not shooting
@@ -68,7 +65,6 @@ public class GrapplingHook : MonoBehaviour
             }
 
             attached = hook.transform.position == hookHitTarget.point;
-            // attached = hook.GetComponent<hookDetector>().attached;
 
             if (attached)
             {
@@ -82,15 +78,7 @@ public class GrapplingHook : MonoBehaviour
                 {
                     ReturnHook();
                     allowedToShoot = false;
-                }
-
-                if (Vector3.Distance(hookHolder.transform.position, hook.transform.position) > hookLineLength - 0.1f)
-                {
-                    Vector3 v = transform.position - hook.transform.position;
-                    v = Vector3.ClampMagnitude(v, hookLineLength);
-                    transform.position = hook.transform.position + v;
-                }
-
+                }                
             }
         }
 
@@ -99,14 +87,17 @@ public class GrapplingHook : MonoBehaviour
             ReturnHook();
             allowedToShoot = true;
             attached = false;
+            Debug.Log("Let go");
         }
     }
 
     void ReturnHook()
     {
         hook.transform.position = hookHolder.transform.position;
+        allowedToShoot = true;
         attached = false;
         havePointOnWall = false;
     }
-}
 
+
+}

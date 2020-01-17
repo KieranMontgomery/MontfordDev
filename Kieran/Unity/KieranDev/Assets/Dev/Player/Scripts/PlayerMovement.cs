@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Rigidbody ))]
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,20 +14,21 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 velocity;
     public float velocityMagnitude;
     public float gravity = -19.62f; // Two times 9.81 since it felt sluggish
-    public float jumpHeight = 3f;
-    public float groundCheckDistance = 0.05f;
+    public float jumpHeight = 5f;
     [Range(3, 360)]
     public int numberOfGroundCheckRays;
 
     // Private declerations
 
-    private CharacterController characterController;
+    private Rigidbody rb;
     private GrapplingHook grapplingHook;
-    private SpringJoint joint;
+    private CapsuleCollider capsuleCollider;
+
 
     private float speed;
-    private bool isGrounded = false;
+    public bool isGrounded = false;
     private bool isAttached = true;
+    private float groundCheckDistance = 0.05f;
 
     // Declerations
     Ray[] groundCheckRays;
@@ -37,12 +38,13 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        characterController = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
         grapplingHook = GetComponent<GrapplingHook>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         isGrounded = GroundCheck();
         isAttached = GetComponent<GrapplingHook>().attached;
@@ -51,35 +53,22 @@ public class PlayerMovement : MonoBehaviour
         Vector3 input;
         GetInput(out input);
         Vector3 desiredDirection = transform.forward * input.z + transform.right * input.x;
-        velocity.x = desiredDirection.x * speed;
-        velocity.z = desiredDirection.z * speed;
-
-        if (Input.GetKey(KeyCode.Space) && isGrounded)
-        {
-            isGrounded = false;
-            velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
-        }
-
-        // -------------------------------- Vertical movement --------------------------------
-        if (!isGrounded && !isAttached)
-        {
-            velocity.y += gravity * Time.deltaTime;
-        }
-        else
-        {
-            velocity.y = -characterController.stepOffset / Time.deltaTime;
-        }
+        velocity = desiredDirection * speed;
 
         // -------------------------------- Other movement attributes --------------------------------
         sprint();
-        //grapplingHook.grapple(transform.position);
+        jump();
+        hook();
 
         // -------------------------------- Apply movement --------------------------------
-        characterController.Move(velocity * Time.deltaTime);
-        velocityMagnitude = velocity.magnitude;
+        rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+        velocity = rb.velocity;
+    }
 
-        grapplingHook.grapple(transform.position);
-
+    private void Update()
+    {
+        // Check for grapple hook
+        grapplingHook.grapple();
     }
 
     void GetInput(out Vector3 input)
@@ -94,6 +83,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+    
     public bool GroundCheck()
     {
         for (int i=0; i < numberOfGroundCheckRays; i++)
@@ -102,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
             float angle = (float)i * 360f/(float)numberOfGroundCheckRays;
             angle = angle / 180.0f * Mathf.PI;
             //Debug.Log((i, angle));
-            Vector3 positionOfRay = transform.position + Vector3.down + new Vector3(characterController.radius * Mathf.Cos(angle), 0f, characterController.radius * Mathf.Sin(angle));
+            Vector3 positionOfRay = transform.position + Vector3.down + new Vector3(capsuleCollider.radius * Mathf.Cos(angle), 0.01f, capsuleCollider.radius * Mathf.Sin(angle));
             Debug.DrawRay(positionOfRay, Vector3.down * groundCheckDistance, Color.red);
             if (Physics.Raycast(positionOfRay, Vector3.down, out hit, groundCheckDistance))
             {
@@ -112,6 +102,7 @@ public class PlayerMovement : MonoBehaviour
         }
         return false;
     }
+    
 
 
     void sprint()
@@ -125,5 +116,22 @@ public class PlayerMovement : MonoBehaviour
         {
             speed = walkspeed;
         }
+    }
+
+    void jump()
+    {
+        if (isGrounded && Input.GetKey(KeyCode.Space))
+        {
+            rb.AddForce(new Vector3(0, jumpHeight, 0), ForceMode.Impulse);
+        }
+    }
+
+    void hook()
+    {
+        if (grapplingHook.attached)
+        {
+            Debug.Log("Swinging");
+        }
+
     }
 }
