@@ -6,6 +6,7 @@ public class GrapplingHook : MonoBehaviour
 {
     public GameObject hook;
     public GameObject hookHolder;
+    public SphereCollider sphereCollider;
 
     public float hookTravelSpeed;
     public float playerTravelSpeed;
@@ -22,6 +23,7 @@ public class GrapplingHook : MonoBehaviour
 
     private Collider hookCollider;
     private float travelSpeed;
+    public float hookLineLength;
 
     int layerMask = 1 << 10; // Bit shift the index of the layer (8) to get a bit mask
 
@@ -37,7 +39,7 @@ public class GrapplingHook : MonoBehaviour
         allowedToShoot = true;
         attached = false;
     }
-    void Update()
+    public void grapple(Vector3 position)
     {
         // Fired hook
         if (Input.GetKey(KeyCode.E) && allowedToShoot) // Not shooting
@@ -48,6 +50,7 @@ public class GrapplingHook : MonoBehaviour
                 {
                     havePointOnWall = true;
                     target = hookHitTarget.point;
+                    hookLineLength = hookHitTarget.distance;
                 }
                 else
                 {
@@ -56,23 +59,16 @@ public class GrapplingHook : MonoBehaviour
             }
 
             hook.transform.position = Vector3.MoveTowards(hook.transform.position, target, travelSpeed);
-
-            // If hook is too far, bring it back
             currentDistance = Vector3.Distance(hook.transform.position, hookHolder.transform.position);
+
             if (currentDistance >= maxDistance)
             {
                 ReturnHook();
                 allowedToShoot = false;
             }
 
-            if (hook.transform.position == hookHitTarget.point)
-            {
-                attached = true;
-            }
-            else
-            {
-                attached = false;
-            }
+            attached = hook.transform.position == hookHitTarget.point;
+            // attached = hook.GetComponent<hookDetector>().attached;
 
             if (attached)
             {
@@ -82,22 +78,26 @@ public class GrapplingHook : MonoBehaviour
                 Physics.Raycast(hookHolder.transform.position, direction, out hookClip, maxDistance, layerMask);
                 Debug.DrawRay(hookHolder.transform.position, direction, Color.green);
 
-                if (hookClip.point != hookHitTarget.point && hookClip.transform.gameObject.name != "Player")
+                if (hookClip.point != hookHitTarget.point && hookClip.transform.gameObject.name != "Player") // Break if hook goes out of LOS.
                 {
                     ReturnHook();
                     allowedToShoot = false;
-                    havePointOnWall = false;
                 }
+
+                if (Vector3.Distance(hookHolder.transform.position, hook.transform.position) > hookLineLength - 0.1f)
+                {
+                    Vector3 v = transform.position - hook.transform.position;
+                    v = Vector3.ClampMagnitude(v, hookLineLength);
+                    transform.position = hook.transform.position + v;
+                }
+
             }
-            
-          
         }
 
         if (Input.GetKeyUp(KeyCode.E))
         {
             ReturnHook();
             allowedToShoot = true;
-            havePointOnWall = false;
             attached = false;
         }
     }
@@ -106,6 +106,7 @@ public class GrapplingHook : MonoBehaviour
     {
         hook.transform.position = hookHolder.transform.position;
         attached = false;
+        havePointOnWall = false;
     }
 }
 

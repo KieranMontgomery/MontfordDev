@@ -67,6 +67,7 @@
     <Compile Include="Assets\Dev\Player\Ideas\Hook\GrapplingHook.cs" />
     <Compile Include="Assets\Dev\Player\Scripts\MouseLook.cs" />
     <Compile Include="Assets\Dev\Player\Scripts\PlayerMovement.cs" />
+    <Compile Include="Assets\hookDetector.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\MenuSceneLoader.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\SceneAndURLLoader.cs" />

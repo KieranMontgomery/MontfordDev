@@ -16,29 +16,37 @@ public class PlayerMovement : MonoBehaviour
     public float gravity = -19.62f; // Two times 9.81 since it felt sluggish
     public float jumpHeight = 3f;
     public float groundCheckDistance = 0.05f;
+    [Range(3, 360)]
+    public int numberOfGroundCheckRays;
 
     // Private declerations
 
     private CharacterController characterController;
+    private GrapplingHook grapplingHook;
+    private SpringJoint joint;
+
     private float speed;
     private bool isGrounded = false;
+    private bool isAttached = true;
 
     // Declerations
     Ray[] groundCheckRays;
     RaycastHit[] groundCheckRaysInfo;
-    [Range(3, 360)]
-    public int numberOfGroundCheckRays;
+    Vector3 impact = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        grapplingHook = GetComponent<GrapplingHook>();
     }
 
     // Update is called once per frame
     void Update()
     {
         isGrounded = GroundCheck();
+        isAttached = GetComponent<GrapplingHook>().attached;
+
         // -------------------------------- Planar movement --------------------------------
         Vector3 input;
         GetInput(out input);
@@ -53,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // -------------------------------- Vertical movement --------------------------------
-        if (!isGrounded)
+        if (!isGrounded && !isAttached)
         {
             velocity.y += gravity * Time.deltaTime;
         }
@@ -64,10 +72,13 @@ public class PlayerMovement : MonoBehaviour
 
         // -------------------------------- Other movement attributes --------------------------------
         sprint();
+        //grapplingHook.grapple(transform.position);
 
         // -------------------------------- Apply movement --------------------------------
         characterController.Move(velocity * Time.deltaTime);
         velocityMagnitude = velocity.magnitude;
+
+        grapplingHook.grapple(transform.position);
 
     }
 
@@ -82,16 +93,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    /*
-    public bool GroundCheck()
-    {
-        Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, Color.red);       //draw the line to be seen in scene window
-        RaycastHit hit;
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance);
-        // if (isGrounded) Debug.Log(hit.transform.gameObject.name);
-        return isGrounded;
-    }
-    */
 
     public bool GroundCheck()
     {
