@@ -72,7 +72,7 @@ public class GrapplingHook : MonoBehaviour
                 Vector3 direction;
                 direction = hook.transform.position - hookHolder.transform.position;
                 Physics.Raycast(hookHolder.transform.position, direction, out hookClip, maxDistance, layerMask);
-                Debug.DrawRay(hookHolder.transform.position, direction, Color.green);
+                // Debug.DrawRay(hookHolder.transform.position, direction, Color.green);
 
                 if (hookClip.point != hookHitTarget.point && hookClip.transform.gameObject.name != "Player") // Break if hook goes out of LOS.
                 {
@@ -87,7 +87,7 @@ public class GrapplingHook : MonoBehaviour
             ReturnHook();
             allowedToShoot = true;
             attached = false;
-            Debug.Log("Let go");
+            // Debug.Log("Let go");
         }
     }
 

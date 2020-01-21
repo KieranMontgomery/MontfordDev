@@ -57,12 +57,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaTestRef: 0.5
-    - _AtmosphereThickness: 1
+    - _AtmosphereThickness: 0.68
     - _BumpScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EmissionScaleUI: 1
-    - _Exposure: 0.8
+    - _Exposure: 0.84
     - _Glossiness: 0
     - _HdrExposure: 0.8
     - _Lightmapping: 1
@@ -72,8 +72,8 @@ Material:
     - _SkyExponent: 2
     - _SrcBlend: 1
     - _SunDisk: 2
-    - _SunSize: 0.509
-    - _SunSizeConvergence: 3.32
+    - _SunSize: 0.429
+    - _SunSizeConvergence: 5.14
     - _SunStrength: 1
     - _UVSec: 0
     - _ZWrite: 1
