@@ -9,10 +9,10 @@ public class WallRun : MonoBehaviour
 
     private Rigidbody rb;
     private PlayerMovement playerMovement;
-    private bool foundWall;
+    public bool foundWall;
     private RaycastHit closestWall;
-
     bool isGrounded;
+    public bool wallRunRight;
 
     void Start()
     {
@@ -36,7 +36,8 @@ public class WallRun : MonoBehaviour
             Vector3 wallRunningVector = Vector3.Cross(closestWall.normal, Vector3.up);
             float magnitude1 = (currentDirection - wallRunningVector).magnitude;
             float magnitude2 = (currentDirection + wallRunningVector).magnitude;
-
+            rb.AddForce(new Vector3(0f, 4f, 0f), ForceMode.Acceleration);
+            wallRunRight = magnitude1 < magnitude2 ? true : false;
             return magnitude1 < magnitude2 ? wallRunningVector : -1 * wallRunningVector;
 
         }

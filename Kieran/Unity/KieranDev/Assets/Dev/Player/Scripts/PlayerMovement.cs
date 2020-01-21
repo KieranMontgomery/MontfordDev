@@ -30,7 +30,10 @@ public class PlayerMovement : MonoBehaviour
 
 
     private float speed;
-    public bool isGrounded = false;
+
+    public bool isGrounded = true;
+    private bool justLanded = false;
+    private bool inAir = false;
     public bool isJumping;
 
     private bool isAttached = true;

@@ -4166,7 +4166,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988125934}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -9.56, y: 0, z: 7.29}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1033483074}
@@ -4197,11 +4197,6 @@ MonoBehaviour:
   desiredDirection: {x: 0, y: 0, z: 0}
   isGrounded: 0
   isJumping: 0
-  isWallRunForward: 0
-  isWallRunRight: 0
-  isWallRunLeft: 0
-  attached: 0
-  wallRunVelocity: {x: 0, y: 0, z: 0}
 --- !u!114 &988125938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4250,10 +4245,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6bed45e8c2981d4e9a0757dabc239ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canWallRun: 0
-  canWallClimb: 0
-  isWallRunning: 0
-  isWallClimbing: 0
+  wallDistanceCheck: 1
+  numberOfRays: 10
+  foundWall: 0
 --- !u!1 &1005041351
 GameObject:
   m_ObjectHideFlags: 0
@@ -6090,7 +6084,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1486179523}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.03, y: 0, z: 0}
   m_LocalScale: {x: 70, y: 1, z: 70}
   m_Children: []
   m_Father: {fileID: 424985007}
