@@ -4,81 +4,66 @@ using UnityEngine;
 
 public class WallRun : MonoBehaviour
 {
-    // Public
-    public bool canWallRun;
-    public bool canWallClimb;
-    public bool isWallRunning;
-    public bool isWallClimbing;
+    public float wallDistanceCheck;
+    public int numberOfRays;
 
-    // Private
+    private Rigidbody rb;
     private PlayerMovement playerMovement;
+    private bool foundWall;
+    private RaycastHit closestWall;
 
-    // Declerations
     bool isGrounded;
-    float distanceToWall;
 
-    // Start is called before the first frame update
     void Start()
     {
+        foundWall = false;
+        rb = GetComponent<Rigidbody>();
         playerMovement = GetComponent<PlayerMovement>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        isGrounded = GetComponent<PlayerMovement>().isGrounded;
+        isGrounded = playerMovement.isGrounded;
     }
 
-    public void wallRun()
+    public Vector3 wallRun()
     {
-        GameObject closestWall = determineClosetWall();
-        calculateWhatTypeOfRun(closestWall);
-    }
-
-    GameObject determineClosetWall() // Determines closest wall to player
-    {
-        RaycastHit[] castArray = Physics.SphereCastAll(transform.position, 2.0f, transform.forward, 0);
-
-        distanceToWall = 5.0f;
-        int indexOfClosestWall = -999;
-
-        for (int i = 0; i < castArray.Length; i++)
+        getClosestWall();
+        if (foundWall && !isGrounded)
         {
-            if (castArray[i].transform != transform && castArray[i].collider.gameObject.layer == 9)
-            {
-                if (castArray[i].distance < distanceToWall)
+            Vector3 currentDirection = rb.velocity / rb.velocity.magnitude;
+            Vector3 wallRunningVector = Vector3.Cross(closestWall.normal, Vector3.up);
+            float magnitude1 = (currentDirection - wallRunningVector).magnitude;
+            float magnitude2 = (currentDirection + wallRunningVector).magnitude;
+
+            return magnitude1 < magnitude2 ? wallRunningVector : -1 * wallRunningVector;
+
+        }
+        return Vector3.zero;
+    }
+
+    public void getClosestWall()
+    {
+        foundWall = false;
+        RaycastHit[] arrayOfRayCastHits = new RaycastHit[numberOfRays];
+        float smallestDistance = wallDistanceCheck + 1.0f;
+
+        for (int i = 0; i < numberOfRays; i++)
+        {
+            float angle = (float)i * (180.0f / ((float)numberOfRays - 1)) - transform.eulerAngles.y;
+            angle = angle / 180.0f * Mathf.PI;
+            Vector3 direction = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+            if (Physics.Raycast(transform.position, direction, out arrayOfRayCastHits[i], wallDistanceCheck, 1 << LayerMask.NameToLayer("Walls")))
+            { 
+                if (arrayOfRayCastHits[i].distance < smallestDistance)
                 {
-                    distanceToWall = castArray[i].distance;
-                    indexOfClosestWall = i;
+                    smallestDistance = arrayOfRayCastHits[i].distance;
+                    closestWall = arrayOfRayCastHits[i];
+                    foundWall = true;
                 }
             }
         }
-        if (indexOfClosestWall == -999) return null;
-        else return castArray[indexOfClosestWall].transform.gameObject;
-    }
 
-    void calculateWhatTypeOfRun(GameObject wall) // Determine if wall running is possible
-    {
-        bool criteria;
-        criteria = playerMovement.velocityMagnitude > 5 && playerMovement.velocity.y > -10f && playerMovement.velocity.y < 10f;
-
-        if (wall != null && criteria)
-        {
-            // Get closest point to wall
-            Vector3 closestPointOnWall = wall.GetComponent<Collider>().ClosestPoint(transform.position);
-
-            // Calculate angle between forward and closet point
-            Vector3 targetDir = closestPointOnWall - transform.position;
-            float angle = Vector3.Angle(targetDir, transform.forward);
-
-            canWallRun = 30 <= angle && angle < 95 ? true : false;
-            canWallClimb = angle < 30 && !Input.GetKey(KeyCode.S) ? true : false;
-
-        }
-        else
-        {
-            canWallRun = false;
-            canWallClimb = false;
-        }
     }
 }

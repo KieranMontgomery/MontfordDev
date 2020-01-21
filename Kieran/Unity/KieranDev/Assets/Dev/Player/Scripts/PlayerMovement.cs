@@ -61,13 +61,14 @@ public class PlayerMovement : MonoBehaviour
         currentDirection = desiredDirection;
 
         // -------------------------------- Other movement attributes --------------------------------
-        wallRun.wallRun();
+        Vector3 wallRunningDirection = wallRun.wallRun();
         sprint();
         jump();
         hook();
 
         // -------------------------------- Apply movement --------------------------------
 
+        if (wallRunningDirection != Vector3.zero) currentDirection = wallRunningDirection;
         velocity = currentDirection * speed;
         Vector2 planarVelocity = new Vector2(velocity.x, velocity.z);
         if (planarVelocity.magnitude > speed) planarVelocity = Vector2.ClampMagnitude(planarVelocity, speed);
@@ -76,6 +77,8 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
         velocity = rb.velocity;
         velocityMagnitude = planarVelocity.magnitude;
+
+
     }
 
     private void Update()
