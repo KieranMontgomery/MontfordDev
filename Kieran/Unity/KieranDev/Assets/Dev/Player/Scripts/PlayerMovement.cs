@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private CapsuleCollider capsuleCollider;
 
 
-    private float speed;
+    public float speed;
 
     public bool isGrounded = true;
     private bool justLanded = false;
@@ -38,11 +38,10 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isAttached = true;
     private float groundCheckDistance = 0.05f;
-    private Vector3 currentDirection;
+    public Vector3 currentDirection;
 
     // Declerations
 
-    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -51,11 +50,11 @@ public class PlayerMovement : MonoBehaviour
         capsuleCollider = GetComponent<CapsuleCollider>();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void Update()
     {
-        isGrounded = GroundCheck();
-        isAttached = GetComponent<GrapplingHook>().attached;
+        // Check for grapple hook
+        grapplingHook.grapple();
+        isJumping = Input.GetKey(KeyCode.Space);
 
         // -------------------------------- Planar movement --------------------------------
         Vector3 input;
@@ -63,34 +62,43 @@ public class PlayerMovement : MonoBehaviour
         desiredDirection = transform.forward * input.z + transform.right * input.x;
         currentDirection = desiredDirection;
 
-        // -------------------------------- Other movement attributes --------------------------------
-        Vector3 wallRunningDirection = wallRun.wallRun();
-        sprint();
         jump();
+
+    }
+
+    void FixedUpdate()
+    {
+        isGrounded = GroundCheck();
+        isAttached = GetComponent<GrapplingHook>().attached;
+
+        // -------------------------------- Other movement attributes --------------------------------
+        //Vector3 wallRunningDirection = wallRun.wallRun();
+        sprint();
         hook();
+
+        if (isJumping)
+        {
+            if (isGrounded)
+            {
+                rb.AddForce(new Vector3(0f, jumpHeight, 0f), ForceMode.Impulse);
+            }
+        }
 
         // -------------------------------- Apply movement --------------------------------
 
-        if (wallRunningDirection != Vector3.zero) currentDirection = wallRunningDirection;
-        velocity = currentDirection * speed;
-        Vector2 planarVelocity = new Vector2(velocity.x, velocity.z);
-        if (planarVelocity.magnitude > speed) planarVelocity = Vector2.ClampMagnitude(planarVelocity, speed);
-        velocity.x = planarVelocity.x;
-        velocity.z = planarVelocity.y;
-        rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
-        velocity = rb.velocity;
-        velocityMagnitude = planarVelocity.magnitude;
-
+        if (!wallRun.isWallRunning)
+        {
+            velocity = currentDirection * speed;
+            Vector2 planarVelocity = new Vector2(velocity.x, velocity.z);
+            if (planarVelocity.magnitude > speed) planarVelocity = Vector2.ClampMagnitude(planarVelocity, speed);
+            velocity.x = planarVelocity.x;
+            velocity.z = planarVelocity.y;
+            rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+            velocity = rb.velocity;
+            velocityMagnitude = planarVelocity.magnitude;
+        }
 
     }
-
-    private void Update()
-    {
-        // Check for grapple hook
-        grapplingHook.grapple();
-        isJumping = Input.GetKey(KeyCode.Space);
-    }
-
 
     void GetInput(out Vector3 input)
     {
@@ -137,9 +145,9 @@ public class PlayerMovement : MonoBehaviour
 
     void jump()
     {
-        if (isGrounded && Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space))
         {
-            rb.AddForce(new Vector3(0, jumpHeight, 0), ForceMode.Impulse);
+            isJumping = true;
         }
     }
 
