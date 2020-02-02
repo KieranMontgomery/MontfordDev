@@ -38,7 +38,7 @@ public class MouseLook : MonoBehaviour
 
         if (wallRun.foundWall && !playerMovement.isGrounded) // On wall, should be independent
         {
-            tilt += Time.deltaTime * 100.0f;
+            tilt += Time.deltaTime * 70.0f;
             tilt = Mathf.Clamp(tilt, 0f, 12.5f);
             if (tilt == 12.5f)
             {

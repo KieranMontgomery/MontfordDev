@@ -39,12 +39,13 @@ public class WallRun : MonoBehaviour
     void Update()
     {
         isGrounded = playerMovement.isGrounded;
+        updateWallTimer();
     }
 
     private void FixedUpdate()
     {
         wallRunningVector = wallRun();
-        if (wallRunningVector != Vector3.zero)
+        if (wallRunningVector != Vector3.zero && !timerActive)
         {
             Vector3 velocity;
             Vector3 currentDirection = wallRunningVector;
@@ -56,8 +57,10 @@ public class WallRun : MonoBehaviour
             velocity.z = planarVelocity.y;
             rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
             velocity = rb.velocity;
+
+            wallRunJump(wallRunningVector);
         }
- 
+
     }
 
     public Vector3 wallRun()
@@ -114,11 +117,21 @@ public class WallRun : MonoBehaviour
         if (timerActive)
         {
             currentTime += Time.deltaTime;
-            if (currentTime > startTime + 1.5f)
+            if (currentTime > startTime + 0.5f)
             {
                 timerActive = false;
-                Debug.Log("Two seconds have passed since you jumped");
+                Debug.Log("Timer ended");
             }
+        }
+    }
+
+    void wallRunJump(Vector3 wallRunVector)
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && !timerActive)
+        {
+            Vector3 directionToJumpOffWall = closestWall.normal + Vector3.up * 0.5f;
+            startWallTimer();
+            rb.AddForce(directionToJumpOffWall * 10f, ForceMode.Impulse);
         }
     }
 }
